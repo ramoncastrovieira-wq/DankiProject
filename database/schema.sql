@@ -1,0 +1,14 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  role TEXT NOT NULL
+);
+
+CREATE TABLE courses (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);

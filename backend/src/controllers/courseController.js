@@ -1,24 +1,21 @@
 const db = require('../database')
 
-exports.createCourse = (req, res) => {
+exports.createCourse = async (req, res) => {
   const { title, description } = req.body
 
-  db.run(
-    'INSERT INTO courses (title, description, owner_id) VALUES (?, ?, ?)',
-    [title, description, req.user.id],
-    function (err) {
-      if (err) return res.status(400).json({ error: err.message })
-      res.json({ id: this.lastID })
-    }
+  await db.query(
+    'INSERT INTO courses (title, description, owner_id) VALUES ($1,$2,$3)',
+    [title, description, req.user.id]
   )
+
+  res.json({ success: true })
 }
 
-exports.listCourses = (req, res) => {
-  db.all(
-    'SELECT * FROM courses WHERE owner_id = ?',
-    [req.user.id],
-    (err, rows) => {
-      res.json(rows)
-    }
+exports.listCourses = async (req, res) => {
+  const result = await db.query(
+    'SELECT * FROM courses WHERE owner_id = $1',
+    [req.user.id]
   )
+
+  res.json(result.rows)
 }
